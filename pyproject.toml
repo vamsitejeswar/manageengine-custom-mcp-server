@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "zoho-me-mcp-server"
+version = "1.0.0"
+description = "ManageEngine Endpoint Central MCP Server — Gemini OAuth2 integration"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.0.0",
+    "httpx>=0.27.0",
+    "python-dotenv>=1.0.0",
+    "loguru>=0.7.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "tenacity>=8.2.0",
+    "uvicorn[standard]>=0.30.0",
+    "starlette>=0.40.0",
+]
+
+[project.scripts]
+zoho-me-mcp = "src.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
