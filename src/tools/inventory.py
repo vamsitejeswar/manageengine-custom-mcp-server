@@ -1,22 +1,25 @@
 from typing import Optional
 from fastmcp import FastMCP
+from mcp.types import ToolAnnotations
+
+_R = ToolAnnotations(readOnlyHint=True)
 from src.api.client import me_client
 from src.api.endpoints import Inventory
 
 
 def register_inventory_tools(mcp: FastMCP) -> None:
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_get_summary() -> dict:
         """Retrieve overall summary data for the Inventory module."""
         return await me_client.get(Inventory.ALL_SUMMARY)
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_get_filter_params() -> dict:
         """Retrieve available inventory filter parameter values."""
         return await me_client.get(Inventory.FILTER_PARAMS)
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_list_scan_computers(
         branchofficefilter: Optional[str] = None,
         residfilter: Optional[str] = None,
@@ -35,12 +38,12 @@ def register_inventory_tools(mcp: FastMCP) -> None:
             "livestatusfilter": livestatusfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_get_computer_summary(resid: str) -> dict:
         """Retrieve inventory summary details for a specific computer by resource ID."""
         return await me_client.get(Inventory.COMP_SUMMARY, params={"resid": resid})
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_list_software(
         accesstypefilter: Optional[str] = None,
         licensetypefilter: Optional[str] = None,
@@ -55,7 +58,7 @@ def register_inventory_tools(mcp: FastMCP) -> None:
             "compliancestatusfilter": compliancestatusfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_list_prohibited_software(
         uninstallsupportfilter: Optional[str] = None,
         installerformatfilter: Optional[str] = None,
@@ -66,7 +69,7 @@ def register_inventory_tools(mcp: FastMCP) -> None:
             "installerformatfilter": installerformatfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_list_hardware(
         branchofficefilter: Optional[str] = None,
         manufacturerFilter: Optional[str] = None,
@@ -81,7 +84,7 @@ def register_inventory_tools(mcp: FastMCP) -> None:
             "domainfilter": domainfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_get_installed_software(
         resid: str,
         accesstypefilter: Optional[str] = None,
@@ -98,12 +101,12 @@ def register_inventory_tools(mcp: FastMCP) -> None:
             "compliancestatusfilter": compliancestatusfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_get_software_licenses(swid: str) -> dict:
         """Retrieve license details and associated computers for a given software ID."""
         return await me_client.get(Inventory.LICENSES, params={"swid": swid})
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_list_licensed_software(
         compliancestatusfilter: Optional[str] = None,
     ) -> dict:
@@ -112,12 +115,12 @@ def register_inventory_tools(mcp: FastMCP) -> None:
             "compliancestatusfilter": compliancestatusfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_list_software_metering() -> dict:
         """Retrieve the list of software with metering enabled."""
         return await me_client.get(Inventory.SW_METERING)
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_get_computers_by_hardware(
         hwid: str,
         branchofficefilter: Optional[str] = None,
@@ -132,7 +135,7 @@ def register_inventory_tools(mcp: FastMCP) -> None:
             "domainfilter": domainfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_get_computers_by_software(
         swid: str,
         branchofficefilter: Optional[str] = None,
@@ -151,7 +154,7 @@ def register_inventory_tools(mcp: FastMCP) -> None:
             "domainfilter": domainfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_get_computers_by_licensed_software(
         licswid: str,
         licensefilter: Optional[str] = None,
@@ -164,7 +167,7 @@ def register_inventory_tools(mcp: FastMCP) -> None:
             "domainfilter": domainfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_get_computers_by_metering_rule(
         swmeruleid: str,
         branchofficefilter: Optional[str] = None,
@@ -179,7 +182,7 @@ def register_inventory_tools(mcp: FastMCP) -> None:
             "domainfilter": domainfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_get_computers_by_prohibited_software(
         prohibitedswid: str,
         branchofficefilter: Optional[str] = None,
@@ -198,7 +201,7 @@ def register_inventory_tools(mcp: FastMCP) -> None:
             "domainfilter": domainfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def inv_get_computers_by_license(
         licid: str,
         licensefilter: Optional[str] = None,

@@ -1,5 +1,8 @@
 from typing import Optional
 from fastmcp import FastMCP
+from mcp.types import ToolAnnotations
+
+_R = ToolAnnotations(readOnlyHint=True)
 from src.api.client import me_client
 from src.api.endpoints import Reports
 from src.config import settings
@@ -7,12 +10,12 @@ from src.config import settings
 
 def register_report_tools(mcp: FastMCP) -> None:
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def report_list_query_reports() -> dict:
         """List all available query reports."""
         return await me_client.get(Reports.QUERY_REPORTS)
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def report_get_query_data(
         report_id: int,
         startIndex: Optional[int] = None,
@@ -24,12 +27,12 @@ def register_report_tools(mcp: FastMCP) -> None:
             params={"startIndex": startIndex, "limit": limit},
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def report_list_custom_reports() -> dict:
         """Fetch all available custom reports for the authenticated user."""
         return await me_client.get(Reports.CUSTOM_REPORTS)
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def report_get_custom_data(
         first_item_index: Optional[int] = None,
         page_length: Optional[int] = None,

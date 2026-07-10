@@ -1,12 +1,15 @@
 from typing import Optional
 from fastmcp import FastMCP
+from mcp.types import ToolAnnotations
+
+_R = ToolAnnotations(readOnlyHint=True)
 from src.api.client import me_client
 from src.api.endpoints import BitLocker
 
 
 def register_bitlocker_tools(mcp: FastMCP) -> None:
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def bitlocker_get_tpm_report(
         residfilter: Optional[str] = None,
         domainfilter: Optional[str] = None,
@@ -17,7 +20,7 @@ def register_bitlocker_tools(mcp: FastMCP) -> None:
             "domainfilter": domainfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def bitlocker_get_report(
         residfilter: Optional[str] = None,
         domainfilter: Optional[str] = None,
@@ -28,7 +31,7 @@ def register_bitlocker_tools(mcp: FastMCP) -> None:
             "domainfilter": domainfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def bitlocker_get_recovery_keys(
         keyProtectorId: Optional[str] = None,
         compName: Optional[str] = None,

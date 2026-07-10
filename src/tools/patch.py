@@ -1,27 +1,31 @@
 from typing import Optional
 from fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 from src.api.client import me_client
 from src.api.endpoints import Patch
+
+_R = ToolAnnotations(readOnlyHint=True)
+_W = ToolAnnotations(readOnlyHint=False, destructiveHint=True)
 
 
 def register_patch_tools(mcp: FastMCP) -> None:
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_get_health_policy() -> dict:
         """Fetch the system health policy for patch management."""
         return await me_client.get(Patch.HEALTH_POLICY)
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_list_deployment_policies() -> dict:
         """Retrieve the patch deployment policy list."""
         return await me_client.get(Patch.DEPLOYMENT_POLICIES)
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_list_downloaded() -> dict:
         """Retrieve details of all downloaded patches."""
         return await me_client.get(Patch.DOWNLOADED)
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_get_scan_details(
         branchofficefilter: Optional[str] = None,
         healthfilter: Optional[str] = None,
@@ -44,12 +48,12 @@ def register_patch_tools(mcp: FastMCP) -> None:
             "platformfilter": platformfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_W)
     async def patch_decline(patchids: list[str]) -> dict:
         """Initiate decline action on specific patches by their IDs."""
         return await me_client.post(Patch.DECLINE, json={"patchids": patchids})
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_list_all(
         branchofficefilter: Optional[str] = None,
         patchid: Optional[str] = None,
@@ -74,12 +78,12 @@ def register_patch_tools(mcp: FastMCP) -> None:
             "platformfilter": platformfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_W)
     async def patch_scan_all_computers() -> dict:
         """Initiate a patch scan on all managed computers."""
         return await me_client.post(Patch.SCAN_ALL_COMPUTERS)
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_get_summary(
         page: Optional[int] = None,
         pagelimit: Optional[int] = None,
@@ -87,7 +91,7 @@ def register_patch_tools(mcp: FastMCP) -> None:
         """Fetch the patch summary with optional pagination."""
         return await me_client.get(Patch.SUMMARY, params={"page": page, "pagelimit": pagelimit})
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_get_system_patch_report(
         severity: Optional[str] = None,
         patchname: Optional[str] = None,
@@ -116,7 +120,7 @@ def register_patch_tools(mcp: FastMCP) -> None:
             "pageLimit": pageLimit,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_list_all_systems(
         branchofficefilter: Optional[str] = None,
         healthfilter: Optional[str] = None,
@@ -135,7 +139,7 @@ def register_patch_tools(mcp: FastMCP) -> None:
             "platformfilter": platformfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_list_applicable(
         severity: Optional[str] = None,
         patchname: Optional[str] = None,
@@ -162,7 +166,7 @@ def register_patch_tools(mcp: FastMCP) -> None:
             "pageLimit": pageLimit,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_get_system_report(
         patchstatusfilter: Optional[str] = None,
         approvalstatusfilter: Optional[str] = None,
@@ -179,7 +183,7 @@ def register_patch_tools(mcp: FastMCP) -> None:
             "platformfilter": platformfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_list_all_patch_details(
         branchofficefilter: Optional[str] = None,
         patchid: Optional[str] = None,
@@ -200,27 +204,27 @@ def register_patch_tools(mcp: FastMCP) -> None:
             "platformfilter": platformfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_W)
     async def patch_scan_computers(resourceids: list[str]) -> dict:
         """Initiate a patch scan on specific computers by resource IDs."""
         return await me_client.post(Patch.SCAN_COMPUTERS, json={"resourceids": resourceids})
 
-    @mcp.tool()
+    @mcp.tool(annotations=_W)
     async def patch_unapprove(patchids: list[str]) -> dict:
         """Unapprove specific patches by their IDs."""
         return await me_client.post(Patch.UNAPPROVE, json={"patchids": patchids})
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_get_db_update_status() -> dict:
         """Retrieve the current status of the ongoing or last patch database update."""
         return await me_client.get(Patch.DB_UPDATE_STATUS)
 
-    @mcp.tool()
+    @mcp.tool(annotations=_W)
     async def patch_approve(patchids: list[str]) -> dict:
         """Approve specific patches by their IDs."""
         return await me_client.post(Patch.APPROVE, json={"patchids": patchids})
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_list_configurations(
         branchofficefilter: Optional[str] = None,
         configstatusfilter: Optional[str] = None,
@@ -233,12 +237,12 @@ def register_patch_tools(mcp: FastMCP) -> None:
             "domainfilter": domainfilter,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_get_approval_settings() -> dict:
         """Fetch the current patch approval settings."""
         return await me_client.get(Patch.APPROVAL_SETTINGS)
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def patch_list_supported(
         patchid: Optional[str] = None,
         bulletinid: Optional[str] = None,
@@ -259,7 +263,7 @@ def register_patch_tools(mcp: FastMCP) -> None:
             "pagelimit": pagelimit,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_W)
     async def patch_uninstall(
         PatchIDs: list[str],
         ConfigName: str,
@@ -277,7 +281,7 @@ def register_patch_tools(mcp: FastMCP) -> None:
         }.items() if v is not None}
         return await me_client.post(Patch.UNINSTALL, json=body)
 
-    @mcp.tool()
+    @mcp.tool(annotations=_W)
     async def patch_install(
         PatchIDs: list[str],
         actionToPerform: str,
@@ -305,32 +309,32 @@ def register_patch_tools(mcp: FastMCP) -> None:
         }.items() if v is not None}
         return await me_client.post(Patch.INSTALL, json=body)
 
-    @mcp.tool()
+    @mcp.tool(annotations=_W)
     async def patch_apd_create(settings_body: dict) -> dict:
         """Create an Automatic Patch Deployment (APD) task. Pass full settings as a dict."""
         return await me_client.post(Patch.APD_CREATE, json={"settings": settings_body})
 
-    @mcp.tool()
+    @mcp.tool(annotations=_W)
     async def patch_apd_modify(settings_body: dict) -> dict:
         """Modify an existing Automatic Patch Deployment (APD) task."""
         return await me_client.post(Patch.APD_MODIFY, json={"settings": settings_body})
 
-    @mcp.tool()
+    @mcp.tool(annotations=_W)
     async def patch_apd_delete(taskname: str) -> dict:
         """Delete an Automatic Patch Deployment task by name."""
         return await me_client.post(Patch.APD_DELETE, params={"taskname": taskname})
 
-    @mcp.tool()
+    @mcp.tool(annotations=_W)
     async def patch_apd_suspend(taskname: str) -> dict:
         """Suspend an Automatic Patch Deployment task by name."""
         return await me_client.post(Patch.APD_SUSPEND, params={"taskname": taskname})
 
-    @mcp.tool()
+    @mcp.tool(annotations=_W)
     async def patch_apd_resume(taskname: str) -> dict:
         """Resume a suspended Automatic Patch Deployment task by name."""
         return await me_client.post(Patch.APD_RESUME, params={"taskname": taskname})
 
-    @mcp.tool()
+    @mcp.tool(annotations=_W)
     async def patch_decline_settings(
         patches: list[dict],
         customGroupID: Optional[list[str]] = None,

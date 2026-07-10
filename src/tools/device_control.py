@@ -1,12 +1,15 @@
 from typing import Optional
 from fastmcp import FastMCP
+from mcp.types import ToolAnnotations
+
+_R = ToolAnnotations(readOnlyHint=True)
 from src.api.client import me_client
 from src.api.endpoints import DeviceControl
 
 
 def register_device_control_tools(mcp: FastMCP) -> None:
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def dc_get_file_activity(
         fileExtnGrp: Optional[str] = None,
         period: Optional[str] = None,
@@ -37,7 +40,7 @@ def register_device_control_tools(mcp: FastMCP) -> None:
             "pagelimit": pagelimit,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def dc_get_device_audit(
         period: Optional[str] = None,
         computer: Optional[str] = None,
@@ -64,7 +67,7 @@ def register_device_control_tools(mcp: FastMCP) -> None:
             "pagelimit": pagelimit,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def dc_get_file_shadow(
         period: Optional[str] = None,
         computer: Optional[str] = None,
@@ -87,7 +90,7 @@ def register_device_control_tools(mcp: FastMCP) -> None:
             "pagelimit": pagelimit,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def dc_list_unique_devices(
         isblocked: Optional[str] = None,
         os_platform: Optional[str] = None,
@@ -104,7 +107,7 @@ def register_device_control_tools(mcp: FastMCP) -> None:
             "pagelimit": pagelimit,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def dc_list_blocked_devices(
         period: Optional[str] = None,
         computer: Optional[str] = None,
@@ -129,7 +132,7 @@ def register_device_control_tools(mcp: FastMCP) -> None:
             "pagelimit": pagelimit,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def dc_get_mac_device_status(
         page: Optional[int] = None,
         pagelimit: Optional[int] = None,
@@ -140,7 +143,7 @@ def register_device_control_tools(mcp: FastMCP) -> None:
             "pagelimit": pagelimit,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def dc_get_windows_device_status(
         page: Optional[int] = None,
         pagelimit: Optional[int] = None,
@@ -151,7 +154,7 @@ def register_device_control_tools(mcp: FastMCP) -> None:
             "pagelimit": pagelimit,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def dc_list_exempted_devices(
         period: Optional[str] = None,
         os_platform: Optional[str] = None,
@@ -172,7 +175,7 @@ def register_device_control_tools(mcp: FastMCP) -> None:
             "pagelimit": pagelimit,
         })
 
-    @mcp.tool()
+    @mcp.tool(annotations=_R)
     async def dc_list_exempted_device_types(
         period: Optional[str] = None,
         os_platform: Optional[str] = None,
