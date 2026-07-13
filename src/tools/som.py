@@ -3,9 +3,12 @@ from fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 from src.api.client import me_client
 from src.api.endpoints import SOM
+from src.utils.pagination import wrap_paginated_response
 
 _R = ToolAnnotations(readOnlyHint=True)
 _W = ToolAnnotations(readOnlyHint=False, destructiveHint=True)
+
+_API14_MAX = 100
 
 
 def register_som_tools(mcp: FastMCP) -> None:
@@ -28,11 +31,16 @@ def register_som_tools(mcp: FastMCP) -> None:
         searchcomputerfilter: str | None = None,
         servicetagfilter: str | None = None,
         agentcontactfilter: str | None = None,
-        page: int | None = None,
-        pagelimit: int | None = None,
+        page: int = 1,
+        pagelimit: int = 100,
     ) -> dict:
-        """Retrieve all computer details managed by SOM with optional filters."""
-        return await me_client.get(SOM.COMPUTERS, params={
+        """Retrieve all computer details managed by SOM with optional filters.
+
+        Returns up to pagelimit records (default 100, max 100) for the given page.
+        Check _pagination.has_more and _pagination.next_page to retrieve subsequent pages.
+        """
+        pagelimit = min(pagelimit, _API14_MAX)
+        resp = await me_client.get(SOM.COMPUTERS, params={
             "branchofficefilter": branchofficefilter,
             "computernamefilter": computernamefilter,
             "fqdnfilter": fqdnfilter,
@@ -47,14 +55,21 @@ def register_som_tools(mcp: FastMCP) -> None:
             "page": page,
             "pagelimit": pagelimit,
         })
+        return wrap_paginated_response(resp, page, pagelimit)
 
     @mcp.tool(annotations=_R)
     async def som_list_remote_offices(
-        page: int | None = None,
-        pagelimit: int | None = None,
+        page: int = 1,
+        pagelimit: int = 100,
     ) -> dict:
-        """Retrieve details of all configured remote offices."""
-        return await me_client.get(SOM.REMOTE_OFFICE, params={"page": page, "pagelimit": pagelimit})
+        """Retrieve details of all configured remote offices.
+
+        Returns up to pagelimit records (default 100, max 100) for the given page.
+        Check _pagination.has_more and _pagination.next_page to retrieve subsequent pages.
+        """
+        pagelimit = min(pagelimit, _API14_MAX)
+        resp = await me_client.get(SOM.REMOTE_OFFICE, params={"page": page, "pagelimit": pagelimit})
+        return wrap_paginated_response(resp, page, pagelimit)
 
     @mcp.tool(annotations=_W)
     async def som_install_agent(resourceids: list[int]) -> dict:

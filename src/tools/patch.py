@@ -3,6 +3,10 @@ from fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 from src.api.client import me_client
 from src.api.endpoints import Patch
+from src.utils.pagination import wrap_paginated_response
+
+_DCAPI_MAX = 200
+_API14_MAX = 100
 
 _R = ToolAnnotations(readOnlyHint=True)
 _W = ToolAnnotations(readOnlyHint=False, destructiveHint=True)
@@ -85,11 +89,17 @@ def register_patch_tools(mcp: FastMCP) -> None:
 
     @mcp.tool(annotations=_R)
     async def patch_get_summary(
-        page: Optional[int] = None,
-        pagelimit: Optional[int] = None,
+        page: int = 1,
+        pagelimit: int = 100,
     ) -> dict:
-        """Fetch the patch summary with optional pagination."""
-        return await me_client.get(Patch.SUMMARY, params={"page": page, "pagelimit": pagelimit})
+        """Fetch the patch summary with optional pagination.
+
+        Returns up to pagelimit records (default 100, max 100) for the given page.
+        Check _pagination.has_more and _pagination.next_page to retrieve subsequent pages.
+        """
+        pagelimit = min(pagelimit, _API14_MAX)
+        resp = await me_client.get(Patch.SUMMARY, params={"page": page, "pagelimit": pagelimit})
+        return wrap_paginated_response(resp, page, pagelimit)
 
     @mcp.tool(annotations=_R)
     async def patch_get_system_patch_report(
@@ -102,11 +112,16 @@ def register_patch_tools(mcp: FastMCP) -> None:
         patch_status: Optional[str] = None,
         patch_approval_status: Optional[str] = None,
         platform_name: Optional[str] = None,
-        page: Optional[int] = None,
-        pageLimit: Optional[int] = None,
+        page: int = 1,
+        pageLimit: int = 100,
     ) -> dict:
-        """Fetch the list of systems and their patch details (dcapi)."""
-        return await me_client.get(Patch.SYSTEM_PATCH_REPORT, params={
+        """Fetch the list of systems and their patch details (dcapi).
+
+        Returns up to pageLimit records (default 100, max 200) for the given page.
+        Check _pagination.has_more and _pagination.next_page to retrieve subsequent pages.
+        """
+        pageLimit = min(pageLimit, _DCAPI_MAX)
+        resp = await me_client.get(Patch.SYSTEM_PATCH_REPORT, params={
             "severity": severity,
             "patchname": patchname,
             "update_type": update_type,
@@ -119,6 +134,7 @@ def register_patch_tools(mcp: FastMCP) -> None:
             "page": page,
             "pageLimit": pageLimit,
         })
+        return wrap_paginated_response(resp, page, pageLimit)
 
     @mcp.tool(annotations=_R)
     async def patch_list_all_systems(
@@ -149,11 +165,16 @@ def register_patch_tools(mcp: FastMCP) -> None:
         download_status: Optional[str] = None,
         patch_status: Optional[str] = None,
         patchid: Optional[str] = None,
-        page: Optional[int] = None,
-        pageLimit: Optional[int] = None,
+        page: int = 1,
+        pageLimit: int = 100,
     ) -> dict:
-        """Fetch the list of applicable patches with filtering (dcapi)."""
-        return await me_client.get(Patch.APPLICABLE, params={
+        """Fetch the list of applicable patches with filtering (dcapi).
+
+        Returns up to pageLimit records (default 100, max 200) for the given page.
+        Check _pagination.has_more and _pagination.next_page to retrieve subsequent pages.
+        """
+        pageLimit = min(pageLimit, _DCAPI_MAX)
+        resp = await me_client.get(Patch.APPLICABLE, params={
             "severity": severity,
             "patchname": patchname,
             "update_type": update_type,
@@ -165,6 +186,7 @@ def register_patch_tools(mcp: FastMCP) -> None:
             "page": page,
             "pageLimit": pageLimit,
         })
+        return wrap_paginated_response(resp, page, pageLimit)
 
     @mcp.tool(annotations=_R)
     async def patch_get_system_report(
@@ -249,11 +271,16 @@ def register_patch_tools(mcp: FastMCP) -> None:
         approvalstatusfilter: Optional[str] = None,
         severityfilter: Optional[str] = None,
         platformfilter: Optional[str] = None,
-        page: Optional[int] = None,
-        pagelimit: Optional[int] = None,
+        page: int = 1,
+        pagelimit: int = 100,
     ) -> dict:
-        """Retrieve the supported patch list with optional filters."""
-        return await me_client.get(Patch.SUPPORTED, params={
+        """Retrieve the supported patch list with optional filters.
+
+        Returns up to pagelimit records (default 100, max 100) for the given page.
+        Check _pagination.has_more and _pagination.next_page to retrieve subsequent pages.
+        """
+        pagelimit = min(pagelimit, _API14_MAX)
+        resp = await me_client.get(Patch.SUPPORTED, params={
             "patchid": patchid,
             "bulletinid": bulletinid,
             "approvalstatusfilter": approvalstatusfilter,
@@ -262,6 +289,7 @@ def register_patch_tools(mcp: FastMCP) -> None:
             "page": page,
             "pagelimit": pagelimit,
         })
+        return wrap_paginated_response(resp, page, pagelimit)
 
     @mcp.tool(annotations=_W)
     async def patch_uninstall(
